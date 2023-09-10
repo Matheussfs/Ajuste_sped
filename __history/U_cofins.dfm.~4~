@@ -1,0 +1,184 @@
+object Frm_cofins: TFrm_cofins
+  Left = 0
+  Top = 0
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
+  Caption = 'Frm_cofins'
+  ClientHeight = 220
+  ClientWidth = 437
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poMainFormCenter
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel1: TPanel
+    Left = 0
+    Top = -5
+    Width = 441
+    Height = 102
+    TabOrder = 0
+    object Label1: TLabel
+      Left = 136
+      Top = 8
+      Width = 128
+      Height = 19
+      Caption = 'Base de C'#225'lculo'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object edt_base_cofins: TEdit
+      Left = 136
+      Top = 33
+      Width = 136
+      Height = 24
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 0
+      OnChange = edt_base_cofinsChange
+      OnExit = edt_base_cofinsExit
+      OnKeyPress = edt_base_cofinsKeyPress
+    end
+    object CheckBox_presumido_cofins: TCheckBox
+      Left = 144
+      Top = 84
+      Width = 128
+      Height = 17
+      Caption = 'Lucro Presumido'
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 1
+      OnClick = CheckBox_presumido_cofinsClick
+    end
+    object CheckBox_real_cofins: TCheckBox
+      Left = 49
+      Top = 84
+      Width = 89
+      Height = 17
+      Caption = 'Lucro Real'
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 2
+      OnClick = CheckBox_real_cofinsClick
+    end
+    object CheckBox_excluir_icms_cofins: TCheckBox
+      Left = 295
+      Top = 84
+      Width = 122
+      Height = 17
+      Caption = 'Abate o ICMS ?'
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 3
+      OnClick = CheckBox_excluir_icms_cofinsClick
+    end
+  end
+  object Panel2: TPanel
+    Left = -2
+    Top = 94
+    Width = 443
+    Height = 131
+    TabOrder = 1
+    object Label2: TLabel
+      Left = 94
+      Top = 56
+      Width = 28
+      Height = 19
+      Caption = 'R$:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object Btn_calc_pis: TButton
+      Left = 100
+      Top = 9
+      Width = 75
+      Height = 25
+      Caption = 'Calcular'
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 0
+      OnClick = Btn_calc_pisClick
+    end
+    object Btn_limpar_cofins: TButton
+      Left = 181
+      Top = 9
+      Width = 75
+      Height = 25
+      Caption = 'Limpar'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 1
+      OnClick = Btn_limpar_cofinsClick
+    end
+    object edt_valor_cofins: TEdit
+      Left = 128
+      Top = 56
+      Width = 128
+      Height = 27
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 2
+    end
+    object edt_icms_excluir_cofins: TEdit
+      Left = 311
+      Top = 9
+      Width = 90
+      Height = 22
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 3
+      Text = '0'
+      OnExit = edt_icms_excluir_cofinsExit
+    end
+  end
+end

@@ -1,0 +1,210 @@
+unit U_cofins;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
+
+type
+  TFrm_cofins = class(TForm)
+    Label1: TLabel;
+    Label2: TLabel;
+    edt_base_cofins: TEdit;
+    Btn_calc_pis: TButton;
+    Btn_limpar_cofins: TButton;
+    edt_valor_cofins: TEdit;
+    edt_icms_excluir_cofins: TEdit;
+    CheckBox_presumido_cofins: TCheckBox;
+    CheckBox_real_cofins: TCheckBox;
+    CheckBox_excluir_icms_cofins: TCheckBox;
+    procedure edt_base_cofinsChange(Sender: TObject);
+    procedure edt_base_cofinsExit(Sender: TObject);
+    procedure edt_base_cofinsKeyPress(Sender: TObject; var Key: Char);
+    procedure CheckBox_real_cofinsClick(Sender: TObject);
+    procedure CheckBox_presumido_cofinsClick(Sender: TObject);
+    procedure CheckBox_excluir_icms_cofinsClick(Sender: TObject);
+    procedure edt_icms_excluir_cofinsExit(Sender: TObject);
+    procedure Btn_calc_pisClick(Sender: TObject);
+    procedure Btn_limpar_cofinsClick(Sender: TObject);
+
+  private
+  {procedures para calculo do cofins real/presumido.
+  botão de atalho após criar as procedures  Ctrl+Shift+C}
+  procedure real_cofins;
+  procedure presumido_cofins;
+
+
+    { Private declarations }
+  public
+  var base_cofins ,icms_excluir_cofins ,aliquota_cofins_real, resultado_cofins:real;
+    { Public declarations }
+  end;
+
+var
+  Frm_cofins: TFrm_cofins;
+
+implementation
+
+{$R *.dfm}
+
+procedure TFrm_cofins.Btn_calc_pisClick(Sender: TObject);
+
+{Chamando as procedures de cálculo do cofins}
+
+//procedure calculo lucro real
+begin
+if CheckBox_real_cofins.Checked then
+begin
+real_cofins;
+end;
+
+//procedure calculo lucro presumido
+begin
+if CheckBox_presumido_cofins.Checked then
+begin
+presumido_cofins;
+end;
+end;
+end;
+
+procedure TFrm_cofins.Btn_limpar_cofinsClick(Sender: TObject);
+//configuração pra limpar o formulátio após clicar no botão "Btn_limpar_pis"
+var a:integer;
+begin
+for a := 0 to   frm_cofins.ComponentCount-1 do
+ if components[a] is tedit then
+ begin
+    tedit(components[a]).text := '0';
+  end;
+
+end;
+
+procedure TFrm_cofins.CheckBox_excluir_icms_cofinsClick(Sender: TObject);
+//Configuração p/ habilitar/desabilitar o botão de abater o icms
+begin
+If CheckBox_excluir_icms_cofins.checked = true then
+edt_icms_excluir_cofins.Enabled := true;
+
+If CheckBox_excluir_icms_cofins.checked = false then
+edt_icms_excluir_cofins.Enabled := false;
+
+If CheckBox_excluir_icms_cofins.checked = false then
+edt_icms_excluir_cofins.text := ('0');
+end;
+
+
+procedure TFrm_cofins.CheckBox_presumido_cofinsClick(Sender: TObject);
+//configurando o checkbox de lucro presumido
+begin
+If CheckBox_presumido_cofins.checked = true then
+Btn_calc_pis.Enabled := true;
+
+If CheckBox_presumido_cofins.checked = true then
+CheckBox_real_cofins.Enabled := false;
+
+If CheckBox_presumido_cofins.checked = false then
+CheckBox_real_cofins.Enabled := true;
+
+If CheckBox_presumido_cofins.checked = false then
+Btn_calc_pis.Enabled := false;
+
+If CheckBox_presumido_cofins.checked = true then
+CheckBox_excluir_icms_cofins.Enabled := true;
+If CheckBox_presumido_cofins.checked = false then
+CheckBox_excluir_icms_cofins.Enabled := false;
+
+If CheckBox_presumido_cofins.checked = false then
+edt_valor_cofins.clear;
+end;
+
+
+procedure TFrm_cofins.CheckBox_real_cofinsClick(Sender: TObject);
+//configurando o checkbox de lucro real
+begin
+If CheckBox_real_cofins.checked = true then
+Btn_calc_pis.Enabled := true;
+
+If CheckBox_real_cofins.checked = true then
+CheckBox_presumido_cofins.Enabled := false;
+
+If CheckBox_real_cofins.checked = false then
+CheckBox_presumido_cofins.Enabled := true;
+
+If CheckBox_real_cofins.checked = false then
+Btn_calc_pis.Enabled := false;
+
+If CheckBox_real_cofins.checked = true then
+CheckBox_excluir_icms_cofins.Enabled := true;
+If CheckBox_real_cofins.checked = false then
+CheckBox_excluir_icms_cofins.Enabled := false;
+
+If CheckBox_real_cofins.checked = false then
+edt_valor_cofins.clear;
+end;
+
+
+procedure TFrm_cofins.edt_base_cofinsChange(Sender: TObject);
+{configurando p/ o tedit base_cofins habilitar apenas
+quando um dos checkbox for marcado}
+begin
+CheckBox_real_cofins.Enabled := true;
+CheckBox_presumido_cofins.Enabled := true;
+end;
+
+procedure TFrm_cofins.edt_base_cofinsExit(Sender: TObject);
+// colocando um showmessage caso o campo de base esteja vazio
+begin
+if (edt_base_cofins.text='') then
+begin
+showmessage('Deve ser inserido uma base de COFINS');
+edt_base_cofins.setfocus;
+edt_base_cofins.text := ('0');
+end;
+end;
+
+procedure TFrm_cofins.edt_base_cofinsKeyPress(Sender: TObject; var Key: Char);
+//proteção pra não deixar preencher letras no tedit edt_base_cofins
+begin
+ if not (Key in ['0'..'9' , ',' , #8]) then Key := #0;
+end;
+
+
+procedure TFrm_cofins.edt_icms_excluir_cofinsExit(Sender: TObject);
+//colocando um showmessage caso o tedit edt_icms_excluir esteja vazio
+begin
+if (edt_icms_excluir_cofins.text='') then
+begin
+showmessage('Deve ser inserido um valor de icms');
+edt_icms_excluir_cofins.setfocus;
+edt_icms_excluir_cofins.text := ('0');
+end;
+end;
+
+
+procedure TFrm_cofins.presumido_cofins;
+//procedure com o calculo do cofins lucro presumido
+begin
+    If CheckBox_presumido_cofins.checked = true then
+  base_cofins := strtofloat (edt_base_cofins.text);
+  icms_excluir_cofins :=  strtofloat (edt_icms_excluir_cofins.text);
+ aliquota_cofins_real:= strtofloat('3');
+  resultado_cofins:= (base_cofins - icms_excluir_cofins) * aliquota_cofins_real/100;
+  edt_valor_cofins.text := floattostr (resultado_cofins);
+  edt_valor_cofins.text := formatfloat ('0,.00', resultado_cofins);
+end;
+
+procedure TFrm_cofins.real_cofins;
+//procedure com o calculo do cofins lucro real
+begin
+ If CheckBox_real_cofins.checked = true then
+  base_cofins := strtofloat (edt_base_cofins.text);
+  icms_excluir_cofins :=  strtofloat (edt_icms_excluir_cofins.text);
+ aliquota_cofins_real:= strtofloat('7,6');
+  resultado_cofins:= (base_cofins - icms_excluir_cofins) * aliquota_cofins_real/100;
+  edt_valor_cofins.text := floattostr (resultado_cofins);
+  edt_valor_cofins.text := formatfloat ('0,.00', resultado_cofins);
+end;
+
+end.
+

@@ -1,0 +1,123 @@
+unit U_csrf;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls;
+
+type
+  TFrm_csrf = class(TForm)
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    Label1: TLabel;
+    Edt_pis_ret: TEdit;
+    Label3: TLabel;
+    Edt_cofins_ret: TEdit;
+    Label2: TLabel;
+    Edt_csll_ret: TEdit;
+    Panel4: TPanel;
+    Button1: TButton;
+    Button2: TButton;
+    Edt_csrf: TEdit;
+    Label4: TLabel;
+    Label5: TLabel;
+    procedure Button1Click(Sender: TObject);
+    procedure Edt_pis_retKeyPress(Sender: TObject; var Key: Char);
+    procedure Edt_cofins_retKeyPress(Sender: TObject; var Key: Char);
+    procedure Edt_csll_retKeyPress(Sender: TObject; var Key: Char);
+    procedure Edt_pis_retExit(Sender: TObject);
+    procedure Edt_cofins_retExit(Sender: TObject);
+    procedure Edt_csll_retExit(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Frm_csrf: TFrm_csrf;
+
+implementation
+
+{$R *.dfm}
+
+procedure TFrm_csrf.Button1Click(Sender: TObject);
+//configurando cálculo da csrf
+var pis, cofins, csll, resultado:real;
+begin
+pis := strtofloat (Edt_pis_ret.text);
+cofins:= strtofloat (Edt_cofins_ret.text);
+csll:= strtofloat (Edt_csll_ret.text);
+resultado :=  pis + cofins + csll;
+Edt_csrf.text := floattostr (resultado);
+Edt_csrf.text := FormatFloat('0,.00', resultado);
+end;
+
+procedure TFrm_csrf.Button2Click(Sender: TObject);
+//configurando o botão de limpar
+begin
+var i:integer;
+begin
+ for i := 0 to    Frm_csrf.ComponentCount-1 do
+ if components[i] is tedit then
+ begin
+    tedit(components[i]).text := '0';
+   end;
+end;
+end;
+
+procedure TFrm_csrf.Edt_cofins_retExit(Sender: TObject);
+//proteção para que o campo edt não receba valores nulos
+begin
+if (Edt_cofins_ret.text='') then
+begin
+showmessage('Deve ser inserido um valor de COFINS Retido!');
+Edt_cofins_ret.setfocus;
+Edt_cofins_ret.text := ('0');
+end;
+end;
+
+procedure TFrm_csrf.Edt_cofins_retKeyPress(Sender: TObject; var Key: Char);
+begin
+//proteção para permitir escrever apenas números no tedit
+if not (Key in ['0'..'9' , ',' , #8]) then Key := #0;
+end;
+
+procedure TFrm_csrf.Edt_csll_retExit(Sender: TObject);
+//proteção para que o campo edt não receba valores nulos
+begin
+if (Edt_csll_ret.text='') then
+begin
+showmessage('Deve ser inserido um valor de CSLL Retida!');
+Edt_csll_ret.setfocus;
+Edt_csll_ret.text := ('0');
+end;
+end;
+
+procedure TFrm_csrf.Edt_csll_retKeyPress(Sender: TObject; var Key: Char);
+//proteção para permitir escrever apenas números no tedit
+begin
+if not (Key in ['0'..'9' , ',' , #8]) then Key := #0;
+end;
+
+procedure TFrm_csrf.Edt_pis_retExit(Sender: TObject);
+//proteção para que o campo edt não receba valores nulos
+begin
+if (Edt_pis_ret.text='') then
+begin
+showmessage('Deve ser inserido um valor de PIS Retido!');
+Edt_pis_ret.setfocus;
+Edt_pis_ret.text := ('0');
+end;
+end;
+
+procedure TFrm_csrf.Edt_pis_retKeyPress(Sender: TObject; var Key: Char);
+//proteção para permitir escrever apenas números no tedit
+begin
+if not (Key in ['0'..'9' , ',' , #8]) then Key := #0;
+end;
+
+end.

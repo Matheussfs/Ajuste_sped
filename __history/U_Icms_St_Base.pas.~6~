@@ -1,0 +1,227 @@
+unit U_Icms_St_Base;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls;
+
+type
+  TFRM_BASE_ST = class(TForm)
+    edt_vl_produto: TEdit;
+    Edt_vl_seguro: TEdit;
+    Edt_vl_desconto: TEdit;
+    Edt_aliq_mva: TEdit;
+    Edt_alq_frete: TEdit;
+    Edt_desp_acessorias: TEdit;
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Label4: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    Edt_vl_ipi: TEdit;
+    Label7: TLabel;
+    Btn_calc_ipi: TButton;
+    Btn_calc_base: TButton;
+    Btn_limpar_base: TButton;
+    Edt_resultado_bc_st: TEdit;
+    Label8: TLabel;
+    procedure Btn_calc_ipiClick(Sender: TObject);
+    procedure edt_vl_produtoKeyPress(Sender: TObject; var Key: Char);
+    procedure Edt_alq_freteKeyPress(Sender: TObject; var Key: Char);
+    procedure Edt_vl_seguroKeyPress(Sender: TObject; var Key: Char);
+    procedure Edt_vl_descontoKeyPress(Sender: TObject; var Key: Char);
+    procedure Edt_vl_ipiKeyPress(Sender: TObject; var Key: Char);
+    procedure Edt_desp_acessoriasKeyPress(Sender: TObject; var Key: Char);
+    procedure Edt_aliq_mvaKeyPress(Sender: TObject; var Key: Char);
+    procedure edt_vl_produtoExit(Sender: TObject);
+    procedure Edt_alq_freteExit(Sender: TObject);
+    procedure Edt_vl_seguroExit(Sender: TObject);
+    procedure Edt_desp_acessoriasExit(Sender: TObject);
+    procedure Edt_vl_descontoExit(Sender: TObject);
+    procedure Edt_vl_ipiExit(Sender: TObject);
+    procedure Edt_aliq_mvaExit(Sender: TObject);
+    procedure Btn_calc_baseClick(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure Btn_limpar_baseClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  FRM_BASE_ST: TFRM_BASE_ST;
+
+implementation
+
+{$R *.dfm}
+
+uses U_ipi, U_icms_st;
+
+procedure TFRM_BASE_ST.Btn_calc_baseClick(Sender: TObject);
+//variábeis numéricas icms st
+var produto,IPI,Frete,Seguro,Despesas_Acessorias,Descontos,MVA,result:real;
+//calculando base do icms st
+begin
+produto := strtofloat (edt_vl_produto.text);
+IPI := strtofloat (Edt_vl_ipi.text);
+Frete  :=strtofloat (Edt_alq_frete.text);
+Despesas_Acessorias :=strtofloat (Edt_desp_acessorias.text);
+Descontos := strtofloat (Edt_vl_desconto.text);
+Seguro  := strtofloat (Edt_vl_seguro.text);
+mva  := strtofloat (Edt_aliq_mva.text);
+result := strtofloat (Edt_resultado_bc_st.text);
+
+result := ( produto + IPI + Frete + seguro + despesas_acessorias -descontos) *
+(1+(mva/100));
+
+Edt_resultado_bc_st.text := floattostr (result);
+
+
+end;
+
+procedure TFRM_BASE_ST.Btn_calc_ipiClick(Sender: TObject);
+begin
+ Try
+
+
+ Finally
+
+ End;
+end;
+
+procedure TFRM_BASE_ST.Btn_limpar_baseClick(Sender: TObject);
+//configurando o botão de limpar
+begin
+var p:integer;
+begin
+for p := 0 to   FRM_BASE_ST.ComponentCount-1 do
+ if components[p] is tedit then
+ begin
+    tedit(components[p]).text := '0';
+  end;
+end;
+end;
+
+procedure TFRM_BASE_ST.edt_vl_produtoExit(Sender: TObject);
+//proteção para não deixar o campo edt_vl_produto
+begin
+if (edt_vl_produto.text='') then
+begin
+showmessage('Deve ser inserido um valor de produto');
+edt_vl_produto.setfocus;
+edt_vl_produto.text := ('0');
+end;
+end;
+
+procedure TFRM_BASE_ST.edt_vl_produtoKeyPress(Sender: TObject; var Key: Char);
+begin
+ if not (Key in ['0'..'9' , ',' , #8]) then Key := #0;
+end;
+
+procedure TFRM_BASE_ST.Edt_vl_seguroExit(Sender: TObject);
+//proteção para não deixar o campo Edt_vl_seguro vazio
+begin
+if (Edt_vl_seguro.text='') then
+begin
+showmessage('Deve ser inserido um valor de seguro');
+Edt_vl_seguro.setfocus;
+Edt_vl_seguro.text := ('0');
+end;
+end;
+
+procedure TFRM_BASE_ST.Edt_vl_seguroKeyPress(Sender: TObject; var Key: Char);
+begin
+ if not (Key in ['0'..'9' , ',' , #8]) then Key := #0;
+end;
+
+procedure TFRM_BASE_ST.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+//configurando para que a base preencha automáticamente em outro form
+//atalho altf11, deverá ser incluído o form, após, chama-lo
+frm_icms_st.Edt_base_ST.text :=Edt_resultado_bc_st.text;
+end;
+
+procedure TFRM_BASE_ST.Edt_vl_descontoExit(Sender: TObject);
+//proteção para não deixar o campo Edt_vl_desconto vazio
+begin
+if (Edt_vl_desconto.text='') then
+begin
+showmessage('Deve ser inserido um valor de Desconto');
+Edt_vl_desconto.setfocus;
+Edt_vl_desconto.text := ('0');
+end;
+end;
+
+procedure TFRM_BASE_ST.Edt_vl_descontoKeyPress(Sender: TObject; var Key: Char);
+begin
+ if not (Key in ['0'..'9' , ',' , #8]) then Key := #0;
+end;
+
+procedure TFRM_BASE_ST.Edt_aliq_mvaExit(Sender: TObject);
+//proteção para não deixar o campo aliq_mva vazio
+begin
+if (Edt_aliq_mva.text='') then
+begin
+showmessage('Deve ser inserido uma Alíquota MVA');
+Edt_aliq_mva.setfocus;
+Edt_aliq_mva.text := ('0');
+end;
+end;
+
+procedure TFRM_BASE_ST.Edt_aliq_mvaKeyPress(Sender: TObject; var Key: Char);
+begin
+ if not (Key in ['0'..'9' , ',' , #8]) then Key := #0;
+end;
+
+procedure TFRM_BASE_ST.Edt_alq_freteExit(Sender: TObject);
+//proteção para não deixar o campo Edt_alq_frete vazio
+begin
+if (Edt_alq_frete.text='') then
+begin
+showmessage('Deve ser inserido um valor de Frete');
+Edt_alq_frete.setfocus;
+Edt_alq_frete.text := ('0');
+end;
+end;
+
+procedure TFRM_BASE_ST.Edt_alq_freteKeyPress(Sender: TObject; var Key: Char);
+begin
+ if not (Key in ['0'..'9' , ',' , #8]) then Key := #0;
+end;
+
+procedure TFRM_BASE_ST.Edt_desp_acessoriasExit(Sender: TObject);
+//proteção para não deixar o campo Edt_desp_acessorias vazio
+begin
+if (Edt_desp_acessorias.text='') then
+begin
+showmessage('Deve ser inserido um valor de Despessas Acessórias');
+Edt_desp_acessorias.setfocus;
+Edt_desp_acessorias.text := ('0');
+end;
+end;
+
+procedure TFRM_BASE_ST.Edt_desp_acessoriasKeyPress(Sender: TObject; var Key: Char);
+begin
+ if not (Key in ['0'..'9' , ',' , #8]) then Key := #0;
+end;
+
+procedure TFRM_BASE_ST.Edt_vl_ipiExit(Sender: TObject);
+//proteção para não deixar o campo Edt_vl_ipi vazio
+begin
+if (Edt_vl_ipi.text='') then
+begin
+showmessage('Deve ser inserido um valor de IPI');
+Edt_vl_ipi.setfocus;
+Edt_vl_ipi.text := ('0');
+end;
+end;
+
+procedure TFRM_BASE_ST.Edt_vl_ipiKeyPress(Sender: TObject; var Key: Char);
+begin
+ if not (Key in ['0'..'9' , ',' , #8]) then Key := #0;
+end;
+
+end.

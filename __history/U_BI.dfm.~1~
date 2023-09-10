@@ -1,0 +1,41 @@
+object Form2: TForm2
+  Left = 0
+  Top = 0
+  BorderStyle = bsSingle
+  Caption = 'FRM_BI'
+  ClientHeight = 369
+  ClientWidth = 521
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel1: TPanel
+    Left = -8
+    Top = 0
+    Width = 529
+    Height = 185
+    Caption = 'Panel1'
+    TabOrder = 0
+  end
+  object Panel2: TPanel
+    Left = 0
+    Top = 184
+    Width = 521
+    Height = 73
+    Caption = 'Panel2'
+    TabOrder = 1
+  end
+  object Panel3: TPanel
+    Left = 0
+    Top = 256
+    Width = 521
+    Height = 113
+    Caption = 'Panel3'
+    TabOrder = 2
+  end
+end

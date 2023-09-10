@@ -1,0 +1,112 @@
+unit U_configura_banco;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Buttons,
+  Vcl.Imaging.pngimage, Vcl.ExtCtrls;
+
+type
+  TFrm_conectar_banco = class(TForm)
+    Panel1: TPanel;
+    Image1: TImage;
+    Label1: TLabel;
+    Label2: TLabel;
+    Panel5: TPanel;
+    Panel2: TPanel;
+    Label3: TLabel;
+    Label5: TLabel;
+    Label6: TLabel;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
+    Btn_mostrar_senha: TSpeedButton;
+    Panel6: TPanel;
+    Edt_caminho: TEdit;
+    Edt_porta: TEdit;
+    Edt_base: TEdit;
+    Edt_login: TEdit;
+    Edt_senha: TEdit;
+    Btn_confirmar: TBitBtn;
+    Btn_cancelar: TBitBtn;
+    procedure Btn_confirmarClick(Sender: TObject);
+    procedure Btn_cancelarClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Frm_conectar_banco: TFrm_conectar_banco;
+
+implementation
+
+{$R *.dfm}
+
+uses U_ajuste_sped;
+
+function IsPortValid(const Port: string): Boolean;
+var
+  PortNumber: Integer;
+begin
+  Result := TryStrToInt(Port, PortNumber) and (PortNumber >= 1) and (PortNumber <= 65535);
+end;
+
+procedure TFrm_conectar_banco.Btn_cancelarClick(Sender: TObject);
+begin
+  Frm_conectar_banco.Close;
+end;
+
+procedure TFrm_conectar_banco.Btn_confirmarClick(Sender: TObject);
+var
+  ip: string;
+begin
+if  (Edt_caminho.text = '') or (Edt_base.text ='')or  (Edt_login.text ='') or
+    (Edt_senha.text ='')    or (Edt_porta.text ='') then
+    begin
+    showmessage('Atenção, campos com o * são obrigatórios');
+    Exit
+    end;
+
+
+     if not IsPortValid(Edt_porta.Text) then
+  begin
+    ShowMessage('Porta inválida. Insira um valor entre 1 e 65535.');
+    Exit;
+  end;
+
+try
+  if (Edt_caminho.Text <> '') and (Edt_base.Text <> '') and
+     (Edt_login.Text <> '') and (Edt_senha.Text <> '') and
+     IsPortValid(Edt_porta.Text) then
+  begin
+    // Configure os parâmetros da conexão
+    frm_ajuste_sped.FDConnection_principal.Params.Clear;
+    frm_ajuste_sped.FDConnection_principal.Params.Add('Server=' + Edt_caminho.Text);
+    frm_ajuste_sped.FDConnection_principal.Params.Add('Database=' + Edt_base.Text);
+    frm_ajuste_sped.FDConnection_principal.Params.Add('User_Name=' + Edt_login.Text);
+    frm_ajuste_sped.FDConnection_principal.Params.Add('Password=' + Edt_senha.Text);
+    frm_ajuste_sped.FDConnection_principal.Params.Add('Port=' + Edt_porta.Text);
+
+    // Tente abrir a conexão
+    frm_ajuste_sped.FDConnection_principal.Connected := True;
+
+    // Se chegou até aqui, a conexão foi bem-sucedida
+    ShowMessage('Conexão bem-sucedida');
+    Frm_conectar_banco.Close;
+  end
+  else
+  begin
+    ShowMessage('Preencha todos os campos obrigatórios e insira uma porta válida.');
+  end;
+except
+  on E: Exception do
+  begin
+    // Se ocorreu uma exceção, exiba uma mensagem de erro
+    ShowMessage('Erro ao conectar ao servidor: ' + E.Message);
+  end;
+end;
+end;
+end.

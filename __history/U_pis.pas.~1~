@@ -1,0 +1,230 @@
+unit U_pis;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ComCtrls;
+
+type
+  Tfrm_pis = class(TForm)
+    Label1: TLabel;
+    edt_base_pis: TEdit;
+    Btn_calc_pis: TButton;
+    Btn_limpar_pis: TButton;
+    edt_valor_pis: TEdit;
+    Label2: TLabel;
+    edt_icms_excluir: TEdit;
+    CheckBox_presumido: TCheckBox;
+    CheckBox_real: TCheckBox;
+    CheckBox_excluir_icms: TCheckBox;
+    procedure CheckBox_realClick(Sender: TObject);
+    procedure CheckBox_presumidoClick(Sender: TObject);
+    procedure CheckBox_excluir_icmsClick(Sender: TObject);
+    procedure Btn_calc_pisClick(Sender: TObject);
+    procedure edt_base_pisChange(Sender: TObject);
+    procedure Btn_limpar_pisClick(Sender: TObject);
+    procedure edt_base_pisExit(Sender: TObject);
+    procedure edt_icms_excluirExit(Sender: TObject);
+    procedure edt_base_pisKeyPress(Sender: TObject; var Key: Char);
+
+  private
+  {procedures para calculo do pis real/presumido
+  botão de atalho após criar as procedures  Ctrl+Shift+C}
+  procedure pis_real;
+  procedure pis_presumido;
+
+    { Private declarations }
+  public
+var
+base_pis: real;
+aliquota_pis_real: real;
+aliquota_pis_presumido: real;
+resultado_pis: real;
+ icms_excluir: real;
+    { Public declarations }
+  end;
+
+var
+  frm_pis: Tfrm_pis;
+
+implementation
+
+{$R *.dfm}
+
+procedure Tfrm_pis.Btn_calc_pisClick(Sender: TObject);
+//variáveis dos valores de pis
+var
+base_pis: real;
+aliquota_pis_real: real;
+aliquota_pis_presumido: real;
+resultado_pis: real;
+ icms_excluir: real;
+
+{chamando a procudere para o calculo do pis lucro real,
+ao clicar no checkbox referente}
+begin
+if CheckBox_real.Checked then
+begin
+pis_real;
+end;
+
+{chamando a procudere para o calculo do pis lucro presumido,
+ao clicar no checkbox referente}
+begin
+if CheckBox_presumido.Checked then
+begin
+pis_presumido;
+end;
+end;
+end;
+
+
+procedure Tfrm_pis.Btn_limpar_pisClick(Sender: TObject);
+//configurando o botão de limpar, pra preencher '0' em tudo após o clique
+var p:integer;
+begin
+for p := 0 to   frm_pis.ComponentCount-1 do
+ if components[p] is tedit then
+ begin
+    tedit(components[p]).text := '0';
+  end;
+
+end;
+
+
+procedure Tfrm_pis.CheckBox_excluir_icmsClick(Sender: TObject);
+//configurando o botão de exclusão de base do pis
+begin
+  If CheckBox_excluir_icms.checked = true then
+edt_icms_excluir.Enabled := true;
+
+If CheckBox_excluir_icms.checked = false then
+edt_icms_excluir.Enabled := false;
+
+If CheckBox_excluir_icms.checked = false then
+edt_icms_excluir.text := ('0');
+
+end;
+
+
+procedure Tfrm_pis.CheckBox_presumidoClick(Sender: TObject);
+//configurando o checkbox de lucro presumido
+begin
+
+If CheckBox_presumido.checked = true then
+Btn_calc_pis.Enabled := true;
+
+If CheckBox_presumido.checked = true then
+CheckBox_real.Enabled := false;
+
+If CheckBox_presumido.checked = false then
+CheckBox_real.Enabled := true;
+
+If CheckBox_presumido.checked = false then
+Btn_calc_pis.Enabled := false;
+
+If CheckBox_presumido.checked = true then
+CheckBox_excluir_icms.Enabled := true;
+If CheckBox_presumido.checked = false then
+CheckBox_excluir_icms.Enabled := false;
+
+If CheckBox_presumido.checked = false then
+edt_valor_pis.clear;
+
+end;
+
+procedure Tfrm_pis.CheckBox_realClick(Sender: TObject);
+//configurando o checkbox de lucro real
+begin
+If CheckBox_real.checked = true then
+Btn_calc_pis.Enabled := true;
+
+If CheckBox_real.checked = true then
+CheckBox_presumido.Enabled := false;
+
+If CheckBox_real.checked = false then
+CheckBox_presumido.Enabled := true;
+
+If CheckBox_real.checked = false then
+Btn_calc_pis.Enabled := false;
+
+If CheckBox_real.checked = true then
+CheckBox_excluir_icms.Enabled := true;
+If CheckBox_real.checked = false then
+CheckBox_excluir_icms.Enabled := false;
+
+If CheckBox_real.checked = false then
+edt_valor_pis.clear;
+
+end;
+
+
+procedure Tfrm_pis.edt_base_pisChange(Sender: TObject);
+{configurando p/ o tedit base_pis habilitar apenas
+quando um dos checkbox for marcado}
+begin
+CheckBox_real.Enabled := true;
+CheckBox_presumido.Enabled := true;
+end;
+
+procedure Tfrm_pis.edt_base_pisExit(Sender: TObject);
+//proteção pra não deixar o tedit edt_base_pis com valor nulos
+//essa proteção deve ser colocada no evento onexit
+begin
+if (edt_base_pis.text='') then
+begin
+showmessage('Deve ser inserido uma base de PIS');
+edt_base_pis.setfocus;
+edt_base_pis.text := ('0');
+
+end;
+end;
+
+//proteção pra não deixar preencher letras no tedit edt_base_pis
+
+procedure Tfrm_pis.edt_base_pisKeyPress(Sender: TObject; var Key: Char);
+begin
+ if not (Key in ['0'..'9' , ',' , #8]) then Key := #0;
+end;
+
+//proteção pra não deixar o tedit edt_icms_excluir com valor nulos
+//essa proteção deve ser colocada no evento onexit
+procedure Tfrm_pis.edt_icms_excluirExit(Sender: TObject);
+begin
+if (edt_icms_excluir.text='') then
+begin
+showmessage('Deve ser inserido um valor de icms');
+edt_icms_excluir.setfocus;
+edt_icms_excluir.text := ('0');
+end;
+end;
+
+//procedure com o calculo do pis lucro presumido
+procedure Tfrm_pis.pis_presumido;
+begin
+ begin
+ If CheckBox_presumido.checked = true then
+ base_pis := strtofloat (edt_base_pis.text);
+ icms_excluir :=  strtofloat (edt_icms_excluir.text);
+ aliquota_pis_presumido:= strtofloat('0,65');
+ resultado_pis:= (base_pis - icms_excluir) * aliquota_pis_presumido/100;
+ edt_valor_pis.text := floattostr (resultado_pis);
+ edt_valor_pis.text := formatfloat ('0,.00', resultado_pis);
+ end;
+
+end;
+
+//procedure com o calculo do pis lucro real
+procedure Tfrm_pis.pis_real;
+begin
+  If CheckBox_real.checked = true then
+  base_pis := strtofloat (edt_base_pis.text);
+  icms_excluir :=  strtofloat (edt_icms_excluir.text);
+  aliquota_pis_real:= strtofloat('1,65');
+  resultado_pis:= (base_pis - icms_excluir) * aliquota_pis_real/100;
+  edt_valor_pis.text := floattostr (resultado_pis);
+  edt_valor_pis.text := formatfloat ('0,.00', resultado_pis);
+end;
+
+end.

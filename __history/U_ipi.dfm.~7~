@@ -1,0 +1,157 @@
+object frm_IPI: Tfrm_IPI
+  Left = 0
+  Top = 0
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
+  Caption = 'frm_IPI'
+  ClientHeight = 171
+  ClientWidth = 316
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  Position = poMainFormCenter
+  OnClose = FormClose
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Panel1: TPanel
+    Left = 1
+    Top = -6
+    Width = 319
+    Height = 88
+    TabOrder = 0
+    object edt_base_ipi: TEdit
+      Left = 40
+      Top = 48
+      Width = 104
+      Height = 24
+      Hint = 'Categoria'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 0
+      TextHint = 'Base IPI'
+      OnExit = edt_base_ipiExit
+      OnKeyPress = edt_base_ipiKeyPress
+    end
+    object edt_aliq_ipi: TEdit
+      Tag = 5
+      Left = 201
+      Top = 48
+      Width = 58
+      Height = 24
+      Hint = 'Categoria'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 1
+      TextHint = '% IPI'
+      OnChange = edt_aliq_ipiChange
+      OnExit = edt_aliq_ipiExit
+      OnKeyPress = edt_aliq_ipiKeyPress
+    end
+    object StaticText1: TStaticText
+      Left = 40
+      Top = 22
+      Width = 104
+      Height = 20
+      Caption = 'Base de C'#225'lculo'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 2
+    end
+    object StaticText2: TStaticText
+      Left = 201
+      Top = 22
+      Width = 58
+      Height = 20
+      Caption = 'Al'#237'quota'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 3
+    end
+  end
+  object Panel2: TPanel
+    Left = -6
+    Top = 70
+    Width = 326
+    Height = 105
+    TabOrder = 1
+    object Label1: TLabel
+      Left = 64
+      Top = 54
+      Width = 28
+      Height = 19
+      Caption = 'R$:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object Btn_calc_ipi: TButton
+      Left = 88
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = 'Calcular'
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 0
+      OnClick = Btn_calc_ipiClick
+    end
+    object Btn_clear_ipi: TButton
+      Left = 169
+      Top = 8
+      Width = 75
+      Height = 25
+      Caption = 'Limpar'
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 1
+      OnClick = Btn_clear_ipiClick
+    end
+    object edt_total_ipi: TEdit
+      Left = 98
+      Top = 50
+      Width = 119
+      Height = 31
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -19
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 2
+    end
+  end
+end

@@ -1,0 +1,136 @@
+unit U_pesquisa_empresa;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Data.DB, Vcl.Buttons,
+  Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, Vcl.WinXCtrls, FireDAC.Stan.Intf,
+  FireDAC.Stan.Option, FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf,
+  FireDAC.Stan.Def, FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys,
+  FireDAC.Phys.PG, FireDAC.Phys.PGDef, FireDAC.VCLUI.Wait, FireDAC.Comp.Client,
+  FireDAC.Stan.Param, FireDAC.DatS, FireDAC.DApt.Intf, FireDAC.DApt,
+  FireDAC.Comp.DataSet;
+
+type
+  TFrm_pesquisa_empresa = class(TForm)
+    Pnl_principal: TPanel;
+    search_empresas: TSearchBox;
+    DBGrid_pesquisa_empresa: TDBGrid;
+    Btn_pesquisar_empresa: TSpeedButton;
+    DataSource_empresas: TDataSource;
+    FDQuery_principal: TFDQuery;
+    procedure search_empresasChange(Sender: TObject);
+    procedure Btn_pesquisar_empresaClick(Sender: TObject);
+    procedure DBGrid_pesquisa_empresaCellClick(Column: TColumn);
+  private
+    { Private declarations }
+    SelectedIDs: TStringList;
+  public
+    { Public declarations }
+  end;
+
+var
+  Frm_pesquisa_empresa: TFrm_pesquisa_empresa;
+
+implementation
+
+{$R *.dfm}
+
+uses U_ajuste_sped;
+
+procedure TFrm_pesquisa_empresa.Btn_pesquisar_empresaClick(Sender: TObject);
+var
+  FormAjusteSPED: TFrm_Ajuste_SPED;
+begin
+  // Acessar o formulário ajuste_sped (se ele não estiver criado, você pode criar uma instância)
+  FormAjusteSPED := TFrm_Ajuste_SPED(Application.FindComponent('ajuste_sped'));
+
+  if Assigned(FormAjusteSPED) then
+  begin
+    // Definir os valores no StringGrid1 do formulário ajuste_sped
+    Frm_Ajuste_SPED.StringGrid1.Cells[0, 0] := FCdEmpresa;
+   Frm_Ajuste_SPED.StringGrid1.Cells[1, 0] := FNmEmpresa;
+  end;
+
+  // Fechar o formulário Frm_pesquisa_empresa
+  Close;
+end;
+
+
+
+procedure TFrm_pesquisa_empresa.DBGrid_pesquisa_empresaCellClick(
+  Column: TColumn);
+begin
+  frm_ajuste_sped.FCdEmpresa := DBGrid_pesquisa_empresa.DataSource.DataSet.FieldByName('CdEmpresa').AsString;
+  frm_ajuste_sped.FNmEmpresa := DBGrid_pesquisa_empresa.DataSource.DataSet.FieldByName('NmEmpresa').AsString;
+
+end;
+
+procedure TFrm_pesquisa_empresa.search_empresasChange(Sender: TObject);
+var
+  SearchString: string;
+  IsStringSearch: boolean;
+begin
+  SearchString := search_empresas.Text;
+  IsStringSearch := True;
+
+  // Verifica se a string contém apenas letras
+  for var i := 1 to Length(SearchString) do
+  begin
+    if not (SearchString[i] in ['a'..'z', 'A'..'Z']) then
+    begin
+      IsStringSearch := False;
+      Break; // Sai do loop ao encontrar um caractere não-alfabético
+    end;
+  end;
+
+  try
+    FDQuery_principal.Close;
+    FDQuery_principal.SQL.Clear;
+
+    if IsStringSearch then
+    begin
+      FDQuery_principal.SQL.Text :=
+    'SELECT ' +
+    '  CAST(LPAD(A.cdempresa::text, 5, ''0'') AS VARCHAR(5)) As Código_da_empresa, ' +
+    '  B.nmempresa as Nome_empresa ' +
+    'FROM ' +
+    '  wfiscal.empresa A ' +
+    'JOIN ' +
+    '  Wphd.empresa B ' +
+    'ON ' +
+    '  A.cdempresa = B.cdempresa ' +
+    'WHERE ' +
+    '  LOWER(B.nmempresa) ILIKE ''%'' || :searchString || ''%'' OR ' +
+    '  CAST(LPAD(A.cdempresa::text, 5, ''0'') AS VARCHAR(5)) ILIKE ''%'' || :searchString || ''%''';
+    end
+    else
+    begin
+      FDQuery_principal.SQL.Text :=
+      'SELECT ' +
+      '  CAST(LPAD(A.cdempresa::text, 5, ''0'') AS VARCHAR(5)) As Código_da_empresa, ' +
+      '  B.nmempresa as Nome_empresa ' +
+      'FROM ' +
+      '  wfiscal.empresa A ' +
+      'JOIN ' +
+      '  Wphd.empresa B ' +
+      'ON ' +
+      '  A.cdempresa = B.cdempresa ' +
+      'WHERE CAST(A.cdempresa AS TEXT) ILIKE :searchString';
+
+    end;
+
+    FDQuery_principal.ParamByName('searchString').DataType := ftString;
+    FDQuery_principal.ParamByName('searchString').Value := '%' + LowerCase(SearchString) + '%';
+    FDQuery_principal.Open;
+  except
+    on E: Exception do
+    begin
+      ShowMessage('Erro ao executar a consulta');
+    end;
+  end;
+end;
+
+
+end.

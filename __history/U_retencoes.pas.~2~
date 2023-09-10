@@ -1,0 +1,24 @@
+unit U_retencoes;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs;
+
+type
+  TFrm_IRRF = class(TForm)
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Frm_IRRF: TFrm_IRRF;
+
+implementation
+
+{$R *.dfm}
+
+end.
