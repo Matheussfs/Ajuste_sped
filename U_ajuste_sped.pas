@@ -54,6 +54,11 @@ type
     Label8: TLabel;
     Query: TFDQuery;
     Query2: TFDQuery;
+    Edt_icms_nota: TEdit;
+    Label9: TLabel;
+    Edt_modelo_nota: TEdit;
+    Label10: TLabel;
+    QueryUpdate: TFDQuery;
     procedure Btn_pesquisar_empresaClick(Sender: TObject);
     procedure FDConnection_principalAfterConnect(Sender: TObject);
     procedure FDConnection_principalAfterDisconnect(Sender: TObject);
@@ -71,6 +76,8 @@ type
     procedure FormShow(Sender: TObject);
     procedure Edt_cod_ajusteChange(Sender: TObject);
     procedure Edt_cod_ajusteKeyPress(Sender: TObject; var Key: Char);
+    procedure Edt_cod_ajusteExit(Sender: TObject);
+     procedure PorItem;
   private
     { Private declarations }
      SelectedIDs: TStringList;
@@ -97,7 +104,7 @@ begin
 if not FDQuery_principal.Active then
     FDQuery_principal.Active := True;
 
-  // Adicione a linha ao DBGrid_empresa
+  // Adiciona a linha ao DBGrid_empresa
   FDQuery_principal.Append;
   FDQuery_principal.FieldByName('cdempresa').AsString := CdEmpresa;
   FDQuery_principal.FieldByName('nmempresa').AsString := NmEmpresa;
@@ -145,12 +152,16 @@ if (DataSource_empresas.DataSet.RecordCount = 0) then
 
   else
   begin
-
- if Cbx_Nota.Checked = true then
- begin
-   PorNota;
- end;
+  if Cbx_Nota.Checked = true then
+    begin
+      PorNota; // Procedure para rodar o ajuste sped por notas
+    end;
   end;
+
+  if Cbx_itens.Checked = true then
+    begin
+    PorItem; //procedure para rodar o ajuste sped por item
+    end;
 end;
 
 
@@ -165,6 +176,7 @@ begin
    Cbx_Nota.Enabled := false;
    Pnl_itens.Visible :=true ;
    Btn_Rodar_Ajuste.Enabled := true;
+   Cbx_por_ncm.Enabled := True;
   end
  else
  begin
@@ -176,6 +188,7 @@ begin
    Cbx_todos_os_itens.Checked := false;
    Edt_ncm.Clear;
    Btn_Rodar_Ajuste.Enabled := false;
+   Cbx_por_ncm.Enabled := false;
   end;
   end;
 
@@ -204,6 +217,7 @@ begin
  Edt_ncm.Visible := true;
  Edt_ncm.Width := 108;
  Cbx_todos_os_itens.Visible := false;
+ Edt_ncm.Enabled :=true;
 
 end
 else
@@ -211,6 +225,7 @@ begin
  Edt_ncm.Visible := false;
  Cbx_todos_os_itens.Visible := true;
    Edt_ncm.Clear;
+    Edt_ncm.Enabled :=false;
 
 end;
 
@@ -270,6 +285,16 @@ begin
 
 end;
 
+procedure TFrm_ajuste_sped.Edt_cod_ajusteExit(Sender: TObject);
+begin
+ if Length(Edt_cod_ajuste.Text) >10 then
+  begin
+    showmessage ('Código de ajuste deve conter apenas 10 dígitos');
+    Edt_cod_ajuste.text :='';
+    Edt_cod_ajuste.SetFocus;
+  end;
+end;
+
 procedure TFrm_ajuste_sped.Edt_cod_ajusteKeyPress(Sender: TObject;
   var Key: Char);
 begin
@@ -325,7 +350,7 @@ for I := 0 to ComponentCount - 1 do
     GetLocaleFormatSettings(LOCALE_USER_DEFAULT, FormatSettings); // obtém as configurações regionais do sistema
     FormatSettings.ShortDateFormat := 'dd/mm/yyyy'; // define a formatação de data desejada
     Application.UpdateFormatSettings := False; // desativa a atualização das configurações regionais durante a execução do programa
-    DataAtual := Date(); // Obter data atual da máquina
+    DataAtual := Date(); // Obtem data atual da máquina
     DateTimePicker_inicio.Date := StartOfTheMonth(DataAtual);
     DateTimePicker_fim.Date := EndOfTheMonth(DataAtual);
 end;
@@ -365,11 +390,21 @@ begin
   FDQuery_principal.Open;
 end;
 
+procedure TFrm_ajuste_sped.PorItem;
+Begin
+  Application.MessageBox('Em desenvolvimento.', 'Mensagem', MB_ICONINFORMATION);
+end;
+
+
+
 procedure TFrm_ajuste_sped.PorNota;
 var
-  empresa_id, Nota_id, aliquota_icms, Base_icms, Valor_icms, Outros_icms,
+  empresa_id, Nota_id, aliquota_icms, Valor_icms, Outros_icms,
   descricao_complementar, codigo: Variant;
-  tabela: string;
+  tabela, coluna_base,nmobservacao, coluna_outros: string;
+  Base_icms: Double;
+  notaJaLancada: Boolean; // Variável para verificar se a nota já foi lançada
+
 begin
   if Edt_cod_ajuste.Text = '' then
   begin
@@ -377,6 +412,30 @@ begin
     Edt_cod_ajuste.SetFocus;
     Exit;
   end;
+
+  begin
+  if Edt_CFOP.Text = '' then
+  begin
+    ShowMessage('Preencha o CFOP que deseja realizar o ajuste!');
+    Edt_CFOP.SetFocus;
+    Exit;
+  end;
+
+  begin
+  if Edt_icms_nota.Text = '' then
+  begin
+    ShowMessage('Preencha a alíquota de icms das notas que deseja realizar o ajuste!');
+    Edt_icms_nota.SetFocus;
+    Exit;
+  end;
+
+  if Edt_descricao.Text ='' then
+  begin
+    ShowMessage('Preencha a descrição!');
+    Edt_descricao.SetFocus;
+    Exit;
+  end;
+
 
   if Cbx_base_de_calc.Text = '' then
   begin
@@ -406,19 +465,60 @@ begin
     Exit;
   end;
 
-  // Obter o valor do campo empresa_id do DBGrid_empresa
+  // Obtem o valor do campo empresa_id do DBGrid_empresa
   empresa_id := DBGrid_empresa.DataSource.DataSet.FieldByName('cdempresa').Value;
 
-  // Determine a tabela com base no valor de empresa_id
+  // Determina a tabela com base no valor de empresa_id
   tabela := 'wfiscal.m' + empresa_id;
 
-  // Prepare a consulta para buscar o valor de cdnota
-  Query.SQL.Text := 'SELECT cdnota FROM ' + tabela +
-    ' WHERE idcodfiscal = :EDT_CFOP AND dtescrituracao BETWEEN :DataInicio AND :DataFim';
+  // Determina o nome da coluna com base na seleção do Cbx_base_de_calc
+  if Cbx_base_de_calc.Text = 'Valor contábil' then
+    coluna_base := 'vlcontabil'
+  else if Cbx_base_de_calc.Text = 'Base de Icms' then
+    coluna_base := 'vlicmsbase'
+  else if Cbx_base_de_calc.Text = 'Valor de Icms' then
+    coluna_base := 'vlicmsvalor'
+  else if Cbx_base_de_calc.Text = 'Valor de outros' then
+    coluna_base := 'vlicmsoutras'
+  else
+  begin
+    ShowMessage('Seleção inválida no combobox Cbx_base_de_calc.');
+    Exit;
+  end;
+
+  // Determina o nome da coluna com base na seleção do Cbx_outros_valores
+  if Cbx_outros_valores.Text = 'Valor contábil' then
+    coluna_outros := 'vlcontabil'
+  else if Cbx_outros_valores.Text = 'Base de Icms' then
+    coluna_outros := 'vlicmsbase'
+  else if Cbx_outros_valores.Text = 'Valor de Icms' then
+    coluna_outros := 'vlicmsvalor'
+  else if Cbx_outros_valores.Text = 'Valor de outros' then
+    coluna_outros := 'vlicmsoutras'
+    else if Cbx_outros_valores.Text = '0' then
+    coluna_outros := 'vlicmsoutras'
+  else
+  begin
+    ShowMessage('Seleção inválida no combobox Cbx_outros_valores.');
+    Exit;
+  end;
+
+  // Prepara a consulta para buscar o valor de cdnota e das colunas Base_icms e Outros_icms
+  Query.SQL.Text := 'SELECT cdnota, ' + coluna_base + ', ' + coluna_outros + ' FROM ' + tabela +
+    ' WHERE idcodfiscal = :EDT_CFOP and idmoddocfiscal = :Edt_modelo_nota and vlicmsaliquota = :Edt_icms_nota AND dtescrituracao BETWEEN :DataInicio AND :DataFim';
+
   Query.ParamByName('EDT_CFOP').DataType := ftInteger;
   Query.ParamByName('EDT_CFOP').Value := StrToInt(Edt_CFOP.Text);
+
+  Query.ParamByName('Edt_modelo_nota').DataType := ftString; // Parametrizando idmoddocfiscal como string
+  Query.ParamByName('Edt_modelo_nota').Value := Edt_modelo_nota.Text;
+
+  Query.ParamByName('Edt_icms_nota').DataType := ftFloat; // Parametrizando vlicmsaliquota como float (se for um número decimal)
+  Query.ParamByName('Edt_icms_nota').Value := StrToFloat(Edt_icms_nota.Text);
+
   Query.ParamByName('DataInicio').DataType := ftDateTime;
   Query.ParamByName('DataInicio').Value := DateTimePicker_inicio.Date;
+
   Query.ParamByName('DataFim').DataType := ftDateTime;
   Query.ParamByName('DataFim').Value := DateTimePicker_fim.Date;
 
@@ -429,26 +529,29 @@ begin
   begin
     while not Query.Eof do
     begin
-      // Obtenha o valor de Nota_id a partir da consulta
       Nota_id := Query.FieldByName('cdnota').Value;
+      Base_icms := Query.FieldByName(coluna_base).AsFloat; // Convertido para float
+      Outros_icms := Query.FieldByName(coluna_outros).AsFloat; // Convertido para float
 
-      // Verifique se a nota já existe na tabela wfiscal.sped_ajuste
+      // Verifica se a nota já existe na tabela wfiscal.sped_ajuste
       Query2.SQL.Text := 'SELECT COUNT(*) FROM wfiscal.sped_ajuste WHERE Nota_id = :Nota_id';
       Query2.ParamByName('Nota_id').Value := Nota_id;
       Query2.Open;
 
-      if Query2.Fields[0].AsInteger = 0 then
+      notaJaLancada := (Query2.Fields[0].AsInteger > 0); // Verifica se a nota já foi lançada
+
+      Query2.Close;
+
+      // Realiza o cálculo e a inserção apenas se a nota não estiver lançada
+      if not notaJaLancada then
       begin
-        // Obtenha outros valores diretamente dos campos do formulário
+        // Realiza o cálculo
         aliquota_icms := StrToFloat(Edt_Aliquota.Text);
-        Base_icms := StrToFloat(Cbx_base_de_calc.Text);
         Valor_icms := (Base_icms * aliquota_icms / 100);
-        Outros_icms := StrToFloat(Cbx_outros_valores.Text);
         descricao_complementar := Edt_descricao.Text;
         codigo := Edt_cod_ajuste.Text;
 
-        // Execute a inserção
-        Query2.Close;
+        // Executa a inserção
         Query2.SQL.Text := 'INSERT INTO wfiscal.sped_ajuste ' +
           '(empresa_id, Nota_id, aliquota_icms, Base_icms, Valor_icms, Outros_icms, descricao_complementar, codigo) ' +
           'VALUES (:empresa_id::integer, :Nota_id, :aliquota_icms, :Base_icms, :Valor_icms, :Outros_icms, :descricao_complementar, :codigo)';
@@ -462,12 +565,21 @@ begin
         Query2.ParamByName('codigo').Value := codigo;
 
         Query2.ExecSQL;
-      end
-      else
-      begin
       end;
+       if not notaJaLancada then
+      begin
+        QueryUpdate.SQL.Text := 'UPDATE ' + tabela +
+          ' SET nmobservacao = :nmobservacao ' +
+          ' WHERE cdnota = :cdnota';
 
-      Query2.Close;
+        // Constroi o valor para nmobservacao
+        nmobservacao := 'ajuste de código ' + Edt_cod_ajuste.Text + ' ' + Edt_descricao.Text + ' de valor = ' + FloatToStr(Valor_icms);
+
+        QueryUpdate.ParamByName('nmobservacao').Value := nmobservacao;
+        QueryUpdate.ParamByName('cdnota').Value := Nota_id;
+
+        QueryUpdate.ExecSQL;
+      end;
       Query.Next;
     end;
 
@@ -478,6 +590,9 @@ begin
   else
   begin
     ShowMessage('Nenhum registro encontrado para a condição especificada.');
+  end;
+ end;
+
   end;
 end;
 

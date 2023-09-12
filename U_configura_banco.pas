@@ -108,7 +108,7 @@ begin
   frm_ajuste_sped.FDConnection_principal.Params.Add('Port=' + Edt_porta.Text);
 
   try
-    // Tente abrir a conexão
+    // Tenta abrir a conexão
     frm_ajuste_sped.FDConnection_principal.Connected := True;
 
     // Se chegou até aqui, a conexão foi bem-sucedida
@@ -124,20 +124,23 @@ begin
     FRM_Ajuste_Sped.Btn_Rodar_Ajuste.Enabled := true;
     FRM_Ajuste_Sped.Btn_pesquisar_empresa.Enabled := true;
     FRM_Ajuste_Sped.Btn_Configurar_banco.visible := false;
+    FRM_Ajuste_Sped.Edt_descricao.Enabled := true;
+    FRM_Ajuste_Sped.Edt_icms_nota.Enabled := true;
+    FRM_Ajuste_Sped.Edt_modelo_nota.Enabled := true;
     FRM_Ajuste_Sped.LabelStatus.Font.Color := clGreen;
 
 
   except
     on E: EFDDBEngineException do
     begin
-      // Verifique se a mensagem de erro indica falha na autenticação
+      // Verifica se a mensagem de erro indica falha na autenticação
       if Pos('password authentication failed', E.Message) > 0 then
       begin
         ShowMessage('Erro de autenticação: A senha está incorreta.');
       end
       else
       begin
-        // Trate outros erros de conexão ou exiba uma mensagem genérica
+        // Tratae outros erros de conexão ou exiba uma mensagem genérica
         ShowMessage('Erro ao conectar ao servidor: ' + E.Message);
       end;
     end;
@@ -171,9 +174,9 @@ begin
   CmbBanco.ItemIndex := 0; // Define PostgreSQL como a escolha padrão
 
   begin
-    IniFile := TIniFile.Create('CaminhoParaSeuArquivo.ini'); // Substitua pelo caminho correto do seu arquivo INI
+    IniFile := TIniFile.Create('CaminhoParaSeuArquivo.ini');
   try
-    // Recupere os valores das configurações do INI e preencha os campos de edição
+    // Recupera os valores das configurações do INI e preencha os campos de edição
     Edt_caminho.Text := IniFile.ReadString('ConfiguracaoBanco', 'Server', '');
     Edt_base.Text := IniFile.ReadString('ConfiguracaoBanco', 'Database', '');
     Edt_login.Text := IniFile.ReadString('ConfiguracaoBanco', 'User_Name', '');

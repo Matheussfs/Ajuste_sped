@@ -21,13 +21,14 @@ uses
   U_Dime in 'U_Dime.pas' {Frm_dime},
   U_ajuste_sped in 'U_ajuste_sped.pas' {Frm_ajuste_sped},
   U_pesquisa_empresa in 'U_pesquisa_empresa.pas' {Frm_pesquisa_empresa},
-  U_configura_banco in 'U_configura_banco.pas' {Frm_conectar_banco};
+  U_configura_banco in 'U_configura_banco.pas' {Frm_conectar_banco},
+  U_login in 'U_login.pas' {Frm_login};
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TFrm_login, Frm_login);
   Application.Run;
 end.

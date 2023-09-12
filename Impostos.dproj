@@ -180,6 +180,10 @@
             <Form>Frm_conectar_banco</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="U_login.pas">
+            <Form>Frm_login</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

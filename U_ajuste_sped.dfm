@@ -3,7 +3,7 @@ object Frm_ajuste_sped: TFrm_ajuste_sped
   Top = 0
   BorderIcons = [biSystemMenu]
   Caption = 'Ajuste Sped'
-  ClientHeight = 373
+  ClientHeight = 391
   ClientWidth = 686
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -25,7 +25,7 @@ object Frm_ajuste_sped: TFrm_ajuste_sped
       Left = 8
       Top = 1
       Width = 441
-      Height = 233
+      Height = 275
       TabOrder = 0
       object Label1: TLabel
         Left = 16
@@ -101,10 +101,10 @@ object Frm_ajuste_sped: TFrm_ajuste_sped
         OnClick = Btn_pesquisar_empresaClick
       end
       object DBGrid_empresa: TDBGrid
-        Left = 12
-        Top = 47
+        Left = 20
+        Top = 41
         Width = 421
-        Height = 170
+        Height = 224
         DataSource = DataSource_empresas
         ImeName = 'Portuguese (Brazilian ABNT)'
         TabOrder = 0
@@ -134,7 +134,7 @@ object Frm_ajuste_sped: TFrm_ajuste_sped
       Left = 455
       Top = 0
       Width = 228
-      Height = 234
+      Height = 276
       TabOrder = 1
       object Label2: TLabel
         Left = 11
@@ -178,16 +178,31 @@ object Frm_ajuste_sped: TFrm_ajuste_sped
         Height = 15
         Caption = 'Descri'#231#227'o:'
       end
+      object Label9: TLabel
+        Left = 37
+        Top = 216
+        Width = 68
+        Height = 15
+        Caption = '% icms nota:'
+      end
+      object Label10: TLabel
+        Left = 32
+        Top = 245
+        Width = 73
+        Height = 15
+        Caption = 'Modelo Nota:'
+      end
       object Edt_cod_ajuste: TEdit
         AlignWithMargins = True
         Left = 111
         Top = 39
         Width = 104
         Height = 23
-        ImeName = 'Edt_cod_ajuste'
+        ImeName = 'Portuguese (Brazilian ABNT)'
         CanUndoSelText = True
         TabOrder = 0
         OnChange = Edt_cod_ajusteChange
+        OnExit = Edt_cod_ajusteExit
         OnKeyPress = Edt_cod_ajusteKeyPress
       end
       object Cbx_base_de_calc: TComboBox
@@ -279,10 +294,27 @@ object Frm_ajuste_sped: TFrm_ajuste_sped
         CanUndoSelText = True
         TabOrder = 6
       end
+      object Edt_icms_nota: TEdit
+        Left = 111
+        Top = 213
+        Width = 104
+        Height = 23
+        ImeName = 'Portuguese (Brazilian ABNT)'
+        CanUndoSelText = True
+        TabOrder = 7
+      end
+      object Edt_modelo_nota: TEdit
+        Left = 111
+        Top = 242
+        Width = 104
+        Height = 23
+        ImeName = 'Portuguese (Brazilian ABNT)'
+        TabOrder = 8
+      end
     end
     object Panel1: TPanel
       Left = 455
-      Top = 237
+      Top = 282
       Width = 228
       Height = 44
       TabOrder = 2
@@ -307,7 +339,7 @@ object Frm_ajuste_sped: TFrm_ajuste_sped
     end
     object Pnl_Rodar_Ajuste: TPanel
       Left = 19
-      Top = 237
+      Top = 282
       Width = 430
       Height = 90
       TabOrder = 3
@@ -427,7 +459,7 @@ object Frm_ajuste_sped: TFrm_ajuste_sped
     end
     object Pnl_itens: TPanel
       Left = 455
-      Top = 282
+      Top = 325
       Width = 228
       Height = 45
       TabOrder = 4
@@ -474,25 +506,25 @@ object Frm_ajuste_sped: TFrm_ajuste_sped
     Connected = True
     AfterConnect = FDConnection_principalAfterConnect
     AfterDisconnect = FDConnection_principalAfterDisconnect
-    Left = 455
-    Top = 320
+    Left = 311
+    Top = 376
   end
   object FDQuery_principal: TFDQuery
     Connection = FDConnection_principal
     SQL.Strings = (
       '')
-    Left = 495
-    Top = 320
+    Left = 359
+    Top = 376
   end
   object FDPhysPgDriverLink1: TFDPhysPgDriverLink
     VendorLib = 'C:\Users\Matheus\Downloads\libpq.dll'
-    Left = 583
-    Top = 320
+    Left = 471
+    Top = 376
   end
   object DataSource_empresas: TDataSource
     DataSet = FDQuery_principal
-    Left = 535
-    Top = 320
+    Left = 423
+    Top = 376
   end
   object Query: TFDQuery
     Connection = FDConnection_principal
@@ -502,6 +534,11 @@ object Frm_ajuste_sped: TFrm_ajuste_sped
   object Query2: TFDQuery
     Connection = FDConnection_principal
     Left = 354
+    Top = 245
+  end
+  object QueryUpdate: TFDQuery
+    Connection = FDConnection_principal
+    Left = 399
     Top = 245
   end
 end
