@@ -3,8 +3,8 @@ unit U_login;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls,  Controls, Forms, ComCtrls, ShellAPI;
+
 
 type
   TFrm_login = class(TForm)
@@ -27,9 +27,12 @@ var
 
 implementation
 
+
 {$R *.dfm}
 
 uses U_tela;
+
+function MinhaFuncaoDLL: Integer; cdecl; external 'libpq.dll';
 
 procedure TFrm_login.btn_entrarClick(Sender: TObject);
 begin
@@ -44,8 +47,8 @@ begin
   begin
     // Credenciais incorretas, exibir mensagem de erro
     ShowMessage('Senha incorreta. Por favor, tente novamente.');
+    Exit; // Não extrair a DLL se as credenciais estiverem incorretas
   end;
 end;
-
 
 end.

@@ -20,6 +20,7 @@ object Frm_login: TFrm_login
     Align = alTop
     Caption = 'Senha suporte:'
     TabOrder = 0
+    ExplicitWidth = 259
   end
   object Pnl_centro: TPanel
     Left = 0

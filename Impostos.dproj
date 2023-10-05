@@ -184,6 +184,8 @@
             <Form>Frm_login</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <None Include="C:\libpq.dll"/>
+        <None Include="D:\Dsn\Projetos\libpq.dll"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>
@@ -210,6 +212,18 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="4">
+                <DeployFile LocalName="C:\libpq.dll" Configuration="Release" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="D:\Dsn\Projetos\libpq.dll" Configuration="Release" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="Win32\Debug\Impostos.exe" Configuration="Debug" Class="ProjectOutput"/>
                 <DeployFile LocalName="Win32\Release\Impostos.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win32">

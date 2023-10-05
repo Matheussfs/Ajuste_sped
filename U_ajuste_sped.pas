@@ -177,6 +177,7 @@ begin
    Pnl_itens.Visible :=true ;
    Btn_Rodar_Ajuste.Enabled := true;
    Cbx_por_ncm.Enabled := True;
+   Cbx_todos_os_itens.Enabled :=true;
   end
  else
  begin
@@ -189,6 +190,7 @@ begin
    Edt_ncm.Clear;
    Btn_Rodar_Ajuste.Enabled := false;
    Cbx_por_ncm.Enabled := false;
+    Cbx_todos_os_itens.Enabled :=false;
   end;
   end;
 
@@ -455,13 +457,6 @@ begin
   begin
     ShowMessage('Preencha o valor de outros!');
     Cbx_outros_valores.SetFocus;
-    Exit;
-  end;
-
-  if Edt_CFOP.Text = '' then
-  begin
-    ShowMessage('Preencha o CFOP!');
-    Edt_CFOP.SetFocus;
     Exit;
   end;
 

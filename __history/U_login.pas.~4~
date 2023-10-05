@@ -1,0 +1,121 @@
+unit U_login;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls,  Controls, Forms, ComCtrls, ShellAPI;
+
+
+type
+  TFrm_login = class(TForm)
+    pnl_titulo: TPanel;
+    Pnl_centro: TPanel;
+    Edt_login: TEdit;
+    edt_senha: TEdit;
+    btn_entrar: TBitBtn;
+    Label1: TLabel;
+    Label2: TLabel;
+    procedure btn_entrarClick(Sender: TObject);
+    procedure ExtractDLL(const dllName, outputPath: string);
+    procedure ExtractDLLFromResource(const resourceName, outputPath: string);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Frm_login: TFrm_login;
+
+implementation
+
+{$R *.dfm}
+
+uses U_tela;
+
+procedure TFrm_login.btn_entrarClick(Sender: TObject);
+var
+  outputPath: string;
+begin
+  if (edt_login.Text = 'SuporteFiscal') and (edt_senha.Text = 'Suppack123') then
+  begin
+    // Credenciais corretas, abrir o Form1
+    Form1 := TForm1.Create(Application);
+    Form1.Show;
+    Hide; // Ocultar o formulário de login
+  end
+  else
+  begin
+    // Credenciais incorretas, exibir mensagem de erro
+    ShowMessage('Senha incorreta. Por favor, tente novamente.');
+    Exit; // Não extrair a DLL se as credenciais estiverem incorretas
+  end;
+
+  outputPath := 'C:\AppImpostos\';
+
+  // Certifique-se de que o diretório de saída exista, ou crie-o
+  if not DirectoryExists(outputPath) then
+    CreateDir(outputPath);
+
+  outputPath := outputPath + 'libpq.dll'; // Substitua 'libpq.dll' pelo nome da sua DLL
+
+  ExtractDLL('libpq.dll', outputPath); // Chame a função para extrair a DLL
+end;
+
+
+procedure TFrm_login.ExtractDLL(const dllName, outputPath: string);
+var
+  resStream, fileStream: TResourceStream;
+  exePath, dllPath: string;
+  inputFileStream, outputFileStream: TFileStream;
+begin
+  exePath := Application.ExeName;
+  dllPath := ExtractFilePath(exePath) + dllName;
+
+  if not FileExists(dllPath) then
+  begin
+    ShowMessage('A DLL não foi encontrada.');
+    Exit;
+  end;
+
+  try
+    inputFileStream := TFileStream.Create(dllPath, fmOpenRead);
+    try
+      outputFileStream := TFileStream.Create(outputPath, fmCreate);
+      try
+        outputFileStream.CopyFrom(inputFileStream, inputFileStream.Size);
+      finally
+        outputFileStream.Free;
+      end;
+    finally
+      inputFileStream.Free;
+    end;
+  except
+    on E: Exception do
+      ShowMessage('Erro ao extrair DLL: ' + E.Message);
+  end;
+end;
+
+procedure TFrm_login.ExtractDLLFromResource(const resourceName, outputPath: string);
+  var
+  resStream, fileStream: TResourceStream;
+begin
+  try
+    resStream := TResourceStream.Create(HInstance, resourceName, RT_RCDATA);
+    try
+      fileStream := TFileStream.Create(outputPath, fmCreate);
+      try
+        fileStream.CopyFrom(resStream, 0);
+      finally
+        fileStream.Free;
+      end;
+    finally
+      resStream.Free;
+    end;
+  except
+    on E: Exception do
+      ShowMessage('Erro ao extrair DLL: ' + E.Message);
+  end;
+end;
+
+end.

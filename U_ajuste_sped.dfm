@@ -503,7 +503,6 @@ object Frm_ajuste_sped: TFrm_ajuste_sped
       'Database=ALTERDATA'
       'Server=localhost'
       'DriverID=PG')
-    Connected = True
     AfterConnect = FDConnection_principalAfterConnect
     AfterDisconnect = FDConnection_principalAfterDisconnect
     Left = 311
@@ -517,7 +516,7 @@ object Frm_ajuste_sped: TFrm_ajuste_sped
     Top = 376
   end
   object FDPhysPgDriverLink1: TFDPhysPgDriverLink
-    VendorLib = 'C:\Users\Matheus\Downloads\libpq.dll'
+    VendorLib = 'C:\AppImpostos\Impostos\libpq.dll'
     Left = 471
     Top = 376
   end
